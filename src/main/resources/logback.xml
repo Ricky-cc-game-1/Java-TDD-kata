@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+		<!-- 
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %replace(%replace(%replace(%replace(%replace(%replace(%replace(%replace(%replace(%msg){'"passwd".*:.*".*"', '"passwd": "******"'}){'"pay_passwd".*:.*".*"', '"pay_passwd": "******"'}){'"new_passwd".*:.*".*"', '"new_passwd": "******"'}){'"login_passwd".*:.*".*"', '"login_passwd": "******"'}){'"addr".*:.*".*"', '"addr": "******"'}){'"cert_id".*:.*".*"', '"cert_id": "******"'}){'"cust_name".*:.*".*"', '"cust_name": "******"'}){'"cust_name_en".*:.*".*"', '"cust_name_en": "******"'}){'pay_passwd.*:.*', 'pay_passwd:******'}%n
+		 -->			
+			<Pattern>%d [%t] %p %c - %m%n</Pattern>		
+		</layout>
+	</appender>
+
+	<appender name="FILE-THREAD" class="ch.qos.logback.classic.sift.SiftingAppender">
+
+		<discriminator>
+			<key>username</key>
+			<defaultValue>default</defaultValue>
+		</discriminator>
+
+		<sift>
+			<appender name="FILE-${username}"
+				class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+				<file>${user.dir}/logs/${username}.log</file>
+
+				<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+
+					<Pattern>%d [%t] %p %c - %m%n</Pattern>
+
+				</encoder>
+
+				<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<FileNamePattern>${user.dir}/logs/${username}.%d{yyyy-MM-dd}.zip
+					</FileNamePattern>
+				</rollingPolicy>
+
+				<triggeringPolicy
+					class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+				</triggeringPolicy>
+
+			</appender>
+		</sift>
+	</appender>
+
+	<logger name="com.convoypayments.service" level="info"
+		additivity="false">
+		<appender-ref ref="FILE-THREAD" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+
+	<root level="info">
+		<appender-ref ref="STDOUT" />
+	</root>
+
+</configuration>
